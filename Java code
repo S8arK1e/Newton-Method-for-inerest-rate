@@ -1,0 +1,75 @@
+//by Morgan
+//default each period = one month
+import java.util.*;
+
+public class NewtonMethod {
+
+    static Scanner keyboard;
+
+    public static void main(String[] args) {
+        System.out.println("Welcome");
+        System.out.println("The real annual interest rate is " + NewtonMethod(GetPeriod(), GetInterestRate()));
+    }
+
+    public static int GetPeriod() {
+        System.out.println("Please input number of installment periods");
+        keyboard = new Scanner(System.in);
+        String PeriodInput0 = keyboard.nextLine();
+        String PeriodInput1 = PeriodInput0.trim();
+        if (!PeriodCheck(PeriodInput1)) {
+            System.out.println("Wrong input, please input integer only");
+            return GetPeriod();
+        } else {
+            return Integer.parseInt(PeriodInput1);
+        }
+    }
+
+    public static boolean PeriodCheck(String input) {
+        try {
+            Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static double GetInterestRate() {
+        System.out.println("Please input interest rate");//rate for each period, not total rate
+        keyboard = new Scanner(System.in);
+        String rate0 = keyboard.nextLine();
+        String rate1 = rate0.trim();
+        if (!RateCheck(rate1)) {
+            System.out.println("Wrong input, please input numbers only");
+            return GetInterestRate();
+        } else {
+            return Double.parseDouble(rate1);
+        }
+    }
+
+    public static boolean RateCheck(String input) {
+        try {
+            Double.parseDouble(input);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static double NewtonMethod(int k, double rate) {
+        double a = rate / k;
+        double guess = 1 + 2 * a;
+        double t = guess;
+        double Function = k * Math.pow(t, k + 1) - (k + 1 + k * a) * Math.pow(t, k) + 1 + k * a;
+        double Derivate = k * (k + 1) * Math.pow(t, k) - k * (k + 1 + k * a) * Math.pow(t, k - 1);
+        t = guess - (Function / Derivate);
+        while (Math.abs(t - guess) > 0.0000001) {
+            Function = k * Math.pow(t, k + 1) - (k + 1 + k * a) * Math.pow(t, k) + (1 + k * a);
+            Derivate = k * (k + 1) * Math.pow(t, k) - k * (k + 1 + k * a) * Math.pow(t, k - 1);
+            guess = t;
+            t = guess - (Function / Derivate);
+        }
+        double RealAnnualInterestRate = (Math.pow(t, 12) - 1) * 100;
+        return RealAnnualInterestRate;
+    }
+
+}
